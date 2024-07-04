@@ -46,6 +46,7 @@ function renderPieces() {
             piece.style.height = '75px';
             piece.setAttribute('draggable', true);
             piece.addEventListener('dragstart', dragStart);
+            piece.addEventListener('touchstart', touchStart, { passive: true });
         } else {
             piece.classList.add('empty');
         }
@@ -68,6 +69,8 @@ function renderGrid() {
             cell.dataset.col = j;
             cell.addEventListener('dragover', dragOver);
             cell.addEventListener('drop', drop);
+            cell.addEventListener('touchmove', touchMove, { passive: false });
+            cell.addEventListener('touchend', touchEnd, { passive: true });
             puzzleContainer.appendChild(cell);
         }
     }
@@ -93,6 +96,31 @@ function drop(event) {
         event.target.dataset.index = index;
         piece.remove();
         checkCompletion();
+    }
+}
+
+// Funciones táctiles
+let currentPiece = null;
+
+function touchStart(event) {
+    currentPiece = event.target;
+    event.dataTransfer = { setData: () => {}, getData: () => currentPiece.dataset.index };
+}
+
+function touchMove(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (targetElement && targetElement.classList.contains('empty')) {
+        targetElement.classList.add('drag-over');
+    }
+}
+
+function touchEnd(event) {
+    const touch = event.changedTouches[0];
+    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (targetElement && targetElement.classList.contains('empty')) {
+        drop({ target: targetElement, dataTransfer: event.dataTransfer, preventDefault: () => {} });
     }
 }
 
