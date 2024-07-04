@@ -3,12 +3,11 @@ const puzzlePiecesContainer = document.getElementById('puzzle-pieces-container')
 const puzzleContainer = document.getElementById('puzzle-container');
 const timerElement = document.getElementById('timer');
 
-let pieces = Array.from({ length: 10 }, (_, i) => i);
+let pieces = Array.from({ length: 9 }, (_, i) => i);
 let timer;
 let seconds = 0;
 let currentPiece = null;
-let startX = 0;
-let startY = 0;
+let offsetX, offsetY;
 
 // Función para iniciar el temporizador
 function startTimer() {
@@ -40,7 +39,7 @@ function renderPieces() {
         const pieceIndex = pieces[i];
         const piece = document.createElement('div');
         piece.classList.add('puzzle-piece');
-        if (pieceIndex !== 8) {
+        if (pieceIndex !== 8) {  // Este es el índice para la pieza vacía en una matriz 3x3
             const x = (pieceIndex % 3) * 100;
             const y = Math.floor(pieceIndex / 3) * 100;
             piece.style.backgroundImage = `url(${imageUrl})`;
@@ -74,6 +73,8 @@ function renderGrid() {
             cell.dataset.col = j;
             cell.addEventListener('dragover', dragOver);
             cell.addEventListener('drop', drop);
+            cell.addEventListener('touchmove', touchMove, { passive: false });
+            cell.addEventListener('touchend', touchEnd, { passive: true });
             puzzleContainer.appendChild(cell);
         }
     }
@@ -105,26 +106,25 @@ function drop(event) {
 // Funciones táctiles
 function touchStart(event) {
     currentPiece = event.target;
-    startX = event.touches[0].clientX;
-    startY = event.touches[0].clientY;
-    event.dataTransfer = { setData: () => {}, getData: () => currentPiece.dataset.index };
+    offsetX = event.target.offsetLeft;
+    offsetY = event.target.offsetTop;
 }
 
 function touchMove(event) {
     event.preventDefault();
     const touch = event.touches[0];
-    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (targetElement && targetElement.classList.contains('empty')) {
-        targetElement.classList.add('drag-over');
-    }
+    currentPiece.style.position = 'absolute';
+    currentPiece.style.left = `${touch.clientX - offsetX}px`;
+    currentPiece.style.top = `${touch.clientY - offsetY}px`;
 }
 
 function touchEnd(event) {
     const touch = event.changedTouches[0];
     const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
     if (targetElement && targetElement.classList.contains('empty')) {
-        drop({ target: targetElement, dataTransfer: event.dataTransfer, preventDefault: () => {} });
+        drop({ target: targetElement, dataTransfer: { getData: () => currentPiece.dataset.index }, preventDefault: () => {} });
     }
+    currentPiece.style.position = 'static';
     currentPiece = null;
 }
 
