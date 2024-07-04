@@ -6,6 +6,9 @@ const timerElement = document.getElementById('timer');
 let pieces = Array.from({ length: 10 }, (_, i) => i);
 let timer;
 let seconds = 0;
+let currentPiece = null;
+let startX = 0;
+let startY = 0;
 
 // Función para iniciar el temporizador
 function startTimer() {
@@ -47,6 +50,8 @@ function renderPieces() {
             piece.setAttribute('draggable', true);
             piece.addEventListener('dragstart', dragStart);
             piece.addEventListener('touchstart', touchStart, { passive: true });
+            piece.addEventListener('touchmove', touchMove, { passive: false });
+            piece.addEventListener('touchend', touchEnd, { passive: true });
         } else {
             piece.classList.add('empty');
         }
@@ -69,8 +74,6 @@ function renderGrid() {
             cell.dataset.col = j;
             cell.addEventListener('dragover', dragOver);
             cell.addEventListener('drop', drop);
-            cell.addEventListener('touchmove', touchMove, { passive: false });
-            cell.addEventListener('touchend', touchEnd, { passive: true });
             puzzleContainer.appendChild(cell);
         }
     }
@@ -100,10 +103,10 @@ function drop(event) {
 }
 
 // Funciones táctiles
-let currentPiece = null;
-
 function touchStart(event) {
     currentPiece = event.target;
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
     event.dataTransfer = { setData: () => {}, getData: () => currentPiece.dataset.index };
 }
 
@@ -122,6 +125,7 @@ function touchEnd(event) {
     if (targetElement && targetElement.classList.contains('empty')) {
         drop({ target: targetElement, dataTransfer: event.dataTransfer, preventDefault: () => {} });
     }
+    currentPiece = null;
 }
 
 // Función para verificar si el rompecabezas está completo
