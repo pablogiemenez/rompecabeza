@@ -73,8 +73,6 @@ function renderGrid() {
             cell.dataset.col = j;
             cell.addEventListener('dragover', dragOver);
             cell.addEventListener('drop', drop);
-            cell.addEventListener('touchmove', touchMove, { passive: false });
-            cell.addEventListener('touchend', touchEnd, { passive: true });
             puzzleContainer.appendChild(cell);
         }
     }
@@ -106,8 +104,9 @@ function drop(event) {
 // Funciones táctiles
 function touchStart(event) {
     currentPiece = event.target;
-    offsetX = event.target.offsetLeft;
-    offsetY = event.target.offsetTop;
+    const rect = currentPiece.getBoundingClientRect();
+    offsetX = event.touches[0].clientX - rect.left;
+    offsetY = event.touches[0].clientY - rect.top;
 }
 
 function touchMove(event) {
