@@ -12,14 +12,14 @@ body {
 h1 {
     margin-bottom: 20px;
     font-family: Arial, sans-serif;
-    color: #000; /* Cambiado a negro */
+    color: #000; /* Color negro */
 }
 
 #timer {
     font-size: 20px;
     font-family: Arial, sans-serif;
     margin-bottom: 20px;
-    color: #000; /* Cambiado a negro */
+    color: #000; /* Color negro */
 }
 
 #main-container {
@@ -36,8 +36,8 @@ h1 {
 }
 
 .small-grid {
-    grid-template-columns: repeat(3, 75px);
-    grid-template-rows: repeat(3, 75px);
+    grid-template-columns: repeat(2, 60px);
+    grid-template-rows: repeat(5, 60px);
 }
 
 .large-grid {
@@ -46,7 +46,7 @@ h1 {
 }
 
 .puzzle-piece {
-    background-size: 225px 225px;
+    background-size: 300px 300px; /* Ajusta esto según el tamaño de tu imagen */
     cursor: grab;
 }
 

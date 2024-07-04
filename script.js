@@ -3,7 +3,7 @@ const puzzlePiecesContainer = document.getElementById('puzzle-pieces-container')
 const puzzleContainer = document.getElementById('puzzle-container');
 const timerElement = document.getElementById('timer');
 
-let pieces = Array.from({ length: 9 }, (_, i) => i);
+let pieces = Array.from({ length: 10 }, (_, i) => i);
 let timer;
 let seconds = 0;
 
@@ -38,12 +38,12 @@ function renderPieces() {
         const piece = document.createElement('div');
         piece.classList.add('puzzle-piece');
         if (pieceIndex !== 8) {
-            const x = (pieceIndex % 3) * 75;
-            const y = Math.floor(pieceIndex / 3) * 75;
+            const x = (pieceIndex % 3) * 100;
+            const y = Math.floor(pieceIndex / 3) * 100;
             piece.style.backgroundImage = `url(${imageUrl})`;
             piece.style.backgroundPosition = `-${x}px -${y}px`;
-            piece.style.width = '75px';
-            piece.style.height = '75px';
+            piece.style.width = '60px';
+            piece.style.height = '60px';
             piece.setAttribute('draggable', true);
             piece.addEventListener('dragstart', dragStart);
             piece.addEventListener('touchstart', touchStart, { passive: true });
